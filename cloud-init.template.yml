@@ -5,12 +5,20 @@ packages:
   - gzip
   - jq
   - tar
+  - uidmap
+  - dbus-user-session
 package_update: true
 package_upgrade: false
+users:
+  - default
+  - name: $MY_RUNNER_USER
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: sudo
+    system: false
 runcmd:
   - udevadm trigger -c add -s block -p ID_VENDOR=HC -p ID_MODEL=Volume
-  - useradd --create-home --shell /bin/bash $MY_RUNNER_USER
-  - echo "$MY_RUNNER_USER ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$MY_RUNNER_USER && chmod 0440 /etc/sudoers.d/$MY_RUNNER_USER
+  - loginctl enable-linger $MY_RUNNER_USER
   - mkdir -p $MY_RUNNER_DIR
   - chown -R $MY_RUNNER_USER:$MY_RUNNER_USER $MY_RUNNER_DIR
   - su - $MY_RUNNER_USER -c "bash $MY_RUNNER_DIR/pre_runner_script.sh"
