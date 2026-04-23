@@ -9,7 +9,8 @@ package_update: true
 package_upgrade: false
 runcmd:
   - udevadm trigger -c add -s block -p ID_VENDOR=HC -p ID_MODEL=Volume
-  - useradd --system --create-home --shell /bin/bash $MY_RUNNER_USER
+  - useradd --create-home --shell /bin/bash $MY_RUNNER_USER
+  - echo "$MY_RUNNER_USER ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$MY_RUNNER_USER && chmod 0440 /etc/sudoers.d/$MY_RUNNER_USER
   - mkdir -p $MY_RUNNER_DIR
   - chown -R $MY_RUNNER_USER:$MY_RUNNER_USER $MY_RUNNER_DIR
   - su - $MY_RUNNER_USER -c "bash $MY_RUNNER_DIR/pre_runner_script.sh"
@@ -17,10 +18,6 @@ runcmd:
   - su - $MY_RUNNER_USER -c "$MY_RUNNER_DIR/config.sh --url \"https://github.com/${MY_GITHUB_REPOSITORY}\" --token \"${MY_GITHUB_RUNNER_REGISTRATION_TOKEN}\" --name \"${MY_NAME}\" --labels \"${MY_NAME},hetzner\" --no-default-labels --disableupdate"
   - su - $MY_RUNNER_USER -c "$MY_RUNNER_DIR/run.sh"
 write_files:
-  - path: /etc/sudoers.d/$MY_RUNNER_USER
-    content: |
-      $MY_RUNNER_USER ALL=(ALL) NOPASSWD:ALL
-    permissions: '0440'
   - path: $MY_RUNNER_DIR/pre_runner_script.sh
     encoding: b64
     content: $MY_PRE_RUNNER_SCRIPT_BASE64
