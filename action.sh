@@ -198,6 +198,14 @@ if [[ ! "$MY_RUNNER_DIR" =~ ^/([^/]+/)*[^/]+$ ]]; then
 	exit_with_failure "'$MY_RUNNER_DIR' is not a valid absolute directory path without a trailing slash!"
 fi
 
+# Set the Linux user to run the GitHub Actions Runner as (default: runner)
+# If INPUT_RUNNER_USER is set, its value is used. Otherwise, the default value "runner" is used.
+MY_RUNNER_USER=${INPUT_RUNNER_USER:-"runner"}
+# Check allowed characters (valid Linux username)
+if [[ ! "$MY_RUNNER_USER" =~ ^[a-z_][a-z0-9_-]{0,31}$ ]]; then
+	exit_with_failure "'$MY_RUNNER_USER' is not a valid Linux username!"
+fi
+
 # Set default GitHub Actions Runner version (default: latest)
 # If INPUT_RUNNER_VERSION is set, its value is used. Otherwise, the default value "latest" is used.
 # Releases: https://github.com/actions/runner/releases
@@ -356,6 +364,7 @@ export MY_INSTALL_SH_BASE64
 export MY_NAME
 export MY_PRE_RUNNER_SCRIPT_BASE64
 export MY_RUNNER_DIR
+export MY_RUNNER_USER
 export MY_RUNNER_VERSION
 # Substitute environment variables in the cloud-init template and create the final cloud-init configuration
 if [[ ! -f "cloud-init.template.yml" ]]; then

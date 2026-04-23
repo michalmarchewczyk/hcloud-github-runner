@@ -81,6 +81,12 @@ inputs:
       GitHub Actions Runner installation directory (created automatically; no trailing slash).
     required: false
     default: '/actions-runner'
+  runner_user:
+    description: >-
+      Name of the Linux user to create and use for running the GitHub Actions Runner.
+      If set, a new system user with this name will be created and the runner will run as that user instead of root.
+    required: false
+    default: 'runner'
   runner_wait:
     description: >-
       Wait up to 'runner_wait' retries (10 sec each) for runner registration (default: 10 minutes).
@@ -153,6 +159,7 @@ runs:
         INPUT_PRIMARY_IPV4: ${{ inputs.primary_ipv4 }}
         INPUT_PRIMARY_IPV6: ${{ inputs.primary_ipv6 }}
         INPUT_RUNNER_DIR: ${{ inputs.runner_dir }}
+        INPUT_RUNNER_USER: ${{ inputs.runner_user }}
         INPUT_RUNNER_VERSION: ${{ inputs.runner_version }}
         INPUT_RUNNER_WAIT: ${{ inputs.runner_wait }}
         INPUT_SERVER_ID: ${{ inputs.server_id }}
