@@ -1,9 +1,4 @@
 #cloud-config
-apt:
-  sources:
-    docker.list:
-      source: deb [arch=amd64] https://download.docker.com/linux/ubuntu $RELEASE stable
-      keyid: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
 packages:
   - curl
   - git
@@ -12,27 +7,16 @@ packages:
   - tar
   - uidmap
   - dbus-user-session
-  - apt-transport-https
-  - ca-certificates
-  - gnupg-agent
-  - software-properties-common
-  - docker-ce
-  - docker-ce-cli
-  - containerd.io
 package_update: true
 package_upgrade: false
-groups:
-  - docker
 users:
   - default
   - name: $MY_RUNNER_USER
     shell: /bin/bash
     sudo: ALL=(ALL) NOPASSWD:ALL
-    groups: [docker, sudo]
+    groups: sudo
     system: false
 runcmd:
-  - systemctl enable docker
-  - systemctl start docker
   - udevadm trigger -c add -s block -p ID_VENDOR=HC -p ID_MODEL=Volume
   - loginctl enable-linger $MY_RUNNER_USER
   - mkdir -p $MY_RUNNER_DIR
@@ -42,9 +26,6 @@ runcmd:
   - su - $MY_RUNNER_USER -c "$MY_RUNNER_DIR/config.sh --url \"https://github.com/${MY_GITHUB_REPOSITORY}\" --token \"${MY_GITHUB_RUNNER_REGISTRATION_TOKEN}\" --name \"${MY_NAME}\" --labels \"${MY_NAME},hetzner\" --no-default-labels --disableupdate"
   - su - $MY_RUNNER_USER -c "$MY_RUNNER_DIR/run.sh"
 write_files:
-  - path: /etc/sysctl.d/enabled_ipv4_forwarding.conf
-    content: |
-      net.ipv4.conf.all.forwarding=1
   - path: $MY_RUNNER_DIR/pre_runner_script.sh
     encoding: b64
     content: $MY_PRE_RUNNER_SCRIPT_BASE64
