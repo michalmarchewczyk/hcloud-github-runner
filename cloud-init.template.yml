@@ -1,14 +1,16 @@
 #cloud-config
 packages:
+  - apt-transport-https
+  - ca-certificates
   - curl
   - git
+  - gnupg
   - gzip
   - jq
+  - lsb-release
   - tar
   - uidmap
   - dbus-user-session
-  - nftables
-  - iptables
 package_update: true
 package_upgrade: false
 users:
@@ -19,10 +21,16 @@ users:
     groups: sudo
     system: false
 runcmd:
-  - ln -s /usr/sbin/iptables /usr/local/bin/iptables
-  - ln -s /usr/sbin/ip6tables /usr/local/bin/ip6tables
-  - ln -s /usr/sbin/nft /usr/local/bin/nft
   - udevadm trigger -c add -s block -p ID_VENDOR=HC -p ID_MODEL=Volume
+  - install -m 0755 -d /etc/apt/keyrings
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  - chmod a+r /etc/apt/keyrings/docker.gpg
+  - echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
+  - apt-get update -y
+  - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+  - systemctl enable docker
+  - systemctl start docker
+  - usermod -aG docker $MY_RUNNER_USER
   - loginctl enable-linger $MY_RUNNER_USER
   - mkdir -p $MY_RUNNER_DIR
   - chown -R $MY_RUNNER_USER:$MY_RUNNER_USER $MY_RUNNER_DIR
