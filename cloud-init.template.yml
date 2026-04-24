@@ -7,6 +7,8 @@ packages:
   - tar
   - uidmap
   - dbus-user-session
+  - nftables
+  - iptables
 package_update: true
 package_upgrade: false
 users:
