@@ -19,6 +19,9 @@ users:
     groups: sudo
     system: false
 runcmd:
+  - ln -s /usr/sbin/iptables /usr/local/bin/iptables
+  - ln -s /usr/sbin/ip6tables /usr/local/bin/ip6tables
+  - ln -s /usr/sbin/nft /usr/local/bin/nft
   - udevadm trigger -c add -s block -p ID_VENDOR=HC -p ID_MODEL=Volume
   - loginctl enable-linger $MY_RUNNER_USER
   - mkdir -p $MY_RUNNER_DIR
