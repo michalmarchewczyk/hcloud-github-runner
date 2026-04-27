@@ -12,6 +12,14 @@ packages:
   - uidmap
   - dbus-user-session
   - dotnet-sdk-10.0
+  - libgtk-3-0t64
+  - libgbm-dev
+  - libnotify-dev
+  - libnss3
+  - libxss1
+  - libasound2t64
+  - libxtst6
+  - xauth
   - xvfb
 package_update: true
 package_upgrade: false
