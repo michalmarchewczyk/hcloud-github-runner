@@ -12,6 +12,7 @@ packages:
   - uidmap
   - dbus-user-session
   - dotnet-sdk-10.0
+  - xvfb
 package_update: true
 package_upgrade: false
 users:
