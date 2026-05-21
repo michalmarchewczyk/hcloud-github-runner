@@ -4,23 +4,9 @@ packages:
   - ca-certificates
   - curl
   - git
-  - gnupg
   - gzip
   - jq
-  - lsb-release
   - tar
-  - uidmap
-  - dbus-user-session
-  - dotnet-sdk-10.0
-  - libgtk-3-0t64
-  - libgbm-dev
-  - libnotify-dev
-  - libnss3
-  - libxss1
-  - libasound2t64
-  - libxtst6
-  - xauth
-  - xvfb
 package_update: true
 package_upgrade: false
 users:
@@ -33,19 +19,6 @@ users:
 runcmd:
   - udevadm trigger -c add -s block -p ID_VENDOR=HC -p ID_MODEL=Volume
   - install -m 0755 -d /etc/apt/keyrings
-  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-  - chmod a+r /etc/apt/keyrings/docker.gpg
-  - echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
-  - curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.36/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-  - chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-  - echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.36/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
-  - curl -fsSL https://packages.buildkite.com/helm-linux/helm-debian/gpgkey | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
-  - echo "deb [signed-by=/usr/share/keyrings/helm.gpg] https://packages.buildkite.com/helm-linux/helm-debian/any/ any main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
-  - apt-get update -y
-  - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin kubectl helm
-  - systemctl enable docker
-  - systemctl start docker
-  - usermod -aG docker $MY_RUNNER_USER
   - loginctl enable-linger $MY_RUNNER_USER
   - mkdir -p $MY_RUNNER_DIR
   - chown -R $MY_RUNNER_USER:$MY_RUNNER_USER $MY_RUNNER_DIR
